@@ -90,17 +90,6 @@ function drawLife(ctx, x, y) {
     ctx.drawImage(img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
-function drawScore(snake) {
-    let scoreCanvas;
-    scoreCanvas = document.getElementById("scoreBoard");
-    let scoreCtx = scoreCanvas.getContext("2d");
-
-    scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    scoreCtx.font = "25px Arial";
-    scoreCtx.fillStyle = "black";
-    scoreCtx.fillText("Score: " + snake.score, 10, 25);
-}
-
 function drawLevel(snake) {
     let levelCanvas;
     levelCanvas = document.getElementById("levelBoard");
@@ -110,6 +99,17 @@ function drawLevel(snake) {
     levelCtx.font = "25px Arial";
     levelCtx.fillStyle = "black";
     levelCtx.fillText("Level " + snake.level, 10, 25);
+}
+
+function drawScore(snake) {
+    let scoreCanvas;
+    scoreCanvas = document.getElementById("scoreBoard");
+    let scoreCtx = scoreCanvas.getContext("2d");
+
+    scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    scoreCtx.font = "25px Arial";
+    scoreCtx.fillStyle = "black";
+    scoreCtx.fillText("Score: " + snake.score, 10, 25);
 }
 
 function drawSpeed(snake) {
@@ -137,11 +137,6 @@ function draw() {
             drawSnakeBody(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
         }
 
-        for (let i = 0; i < life; i++) {
-            let life = document.getElementById("life");
-            ctx.drawImage(life, 25 * i, 0, CELL_SIZE, CELL_SIZE);
-        }
-
         drawLife(ctx, life1.x, life1.y);
         drawLife(ctx, life2.x, life2.y);
         drawLife(ctx, life3.x, life3.y);
@@ -149,8 +144,8 @@ function draw() {
         drawApple(ctx, apple.position.x, apple.position.y);
         drawApple(ctx, apple2.position.x, apple2.position.y);
 
-        drawSpeed(snake1);
         drawLevel(snake1);
+        drawSpeed(snake1);
         drawScore(snake1);
     }, REDRAW_INTERVAL);
 }
@@ -180,22 +175,33 @@ function eat(snake, apple) {
             snake.level = 1;
             snake.speed = 300;
             snake.score = 0;
-            var audio = new Audio('game-over.wav');
+            let audio = new Audio('game-over.wav');
             audio.play();
             setTimeout(() => {
-                alert("Game Selesai");
-            }, 200)
-
-            if (snake.score % 5 === 0 && snake.speed > 50) {
-                snake.level++;
-                snake.speed -= 50;
-                var audio = new Audio('level-up.wav');
-                audio.play();
-                setTimeout(() => {
-                    alert("Yey, level " + snake.level);
-                }, 200)
-            }
+                alert("Hore, kamu menang");
+            }, )
         }
+
+        if (snake.score % 5 === 0 && snake.speed > 50) {
+            snake.level++;
+            snake.speed -= 50;
+            let audio = new Audio('level-up.wav');
+            audio.play();
+            setTimeout(() => {
+                alert("Yey, level " + snake.level);
+            }, )
+        }
+
+        //if (snake.life > 1) {
+        //snake.level = 1;
+        //snake.score = 0;
+        //snake.life = 3;
+        //let audio = new Audio('game-over.wav');
+        //audio.play();
+        //setTimeout(() => {
+        //alert("Game Over");
+        //}, )
+        //}
 
     }
 }
