@@ -1,5 +1,5 @@
-const CELL_SIZE = 16;
-const CANVAS_SIZE = 508;
+const CELL_SIZE = 20;
+const CANVAS_SIZE = 600;
 const REDRAW_INTERVAL = 50;
 const WIDTH = CANVAS_SIZE / CELL_SIZE;
 const HEIGHT = CANVAS_SIZE / CELL_SIZE;
@@ -9,7 +9,7 @@ const DIRECTION = {
     UP: 2,
     DOWN: 3,
 }
-MOVE_INTERVAL = 220;
+const MOVE_INTERVAL = 300;
 
 function initPosition() {
     return {
@@ -31,17 +31,24 @@ function initDirection() {
     return Math.floor(Math.random() * 4);
 }
 
-function initSnake(color, name) {
+function initSnake(color) {
     return {
-        name: name,
         color: color,
         ...initHeadAndBody(),
         direction: initDirection(),
         score: 0,
-        speed: 220
+        speed: 300
     }
 }
-let snake1 = initSnake("purple", "Ular 1");
+
+function initLife(x, y) {
+    return {
+        x: x,
+        y: y
+    }
+}
+
+let snake1 = initSnake("green");
 
 let apple = {
     position: initPosition()
@@ -51,27 +58,57 @@ let apple2 = {
     position: initPosition()
 }
 
+let life1 = initLife(0, 0);
+let life2 = initLife(1, 0);
+let life3 = initLife(2, 0);
+
+const life = [life1, life2, life3];
+
 function drawCell(ctx, x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
+function drawSnake(ctx, x, y) {
+    let img = document.getElementById("snakeHead");
+    ctx.drawImage(img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+}
+
+function drawSnakeBody(ctx, x, y) {
+    let img = document.getElementById("snakeBody");
+    ctx.drawImage(img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+}
+
 function drawApple(ctx, x, y) {
-    let img = document.getElementById('apple');
+    let img = document.getElementById("apple");
+    ctx.drawImage(img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+}
+
+function drawLife(ctx, x, y) {
+    let img = document.getElementById("life");
     ctx.drawImage(img, x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
 function drawScore(snake) {
     let scoreCanvas;
-    if (snake.color == snake1.color) {
-        scoreCanvas = document.getElementById("score1Board");
-    }
+    scoreCanvas = document.getElementById("scoreBoard");
     let scoreCtx = scoreCanvas.getContext("2d");
 
     scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    scoreCtx.font = "30px Arial";
-    scoreCtx.fillStyle = snake.color
-    scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
+    scoreCtx.font = "20px Arial";
+    scoreCtx.fillStyle = "black";
+    scoreCtx.fillText(snake.score, 16, 35);
+}
+
+function drawSpeed(snake) {
+    let speedCanvas;
+    speedCanvas = document.getElementById("speedBoard");
+    let speedCtx = speedCanvas.getContext("2d");
+
+    speedCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    speedCtx.font = "20px Arial";
+    speedCtx.fillStyle = "black";
+    speedCtx.fillText(snake.speed, 10, 25);
 }
 
 function draw() {
@@ -81,10 +118,15 @@ function draw() {
 
         ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color);
+        //drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color);\
+        drawSnake(ctx, snake1.head.x, snake1.head.y, snake1.color);
         for (let i = 1; i < snake1.body.length; i++) {
-            drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
+            drawSnakeBody(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
         }
+
+        drawLife(ctx, life1.x, life1.y);
+        drawLife(ctx, life2.x, life2.y);
+        drawLife(ctx, life3.x, life3.y);
 
         drawApple(ctx, apple.position.x, apple.position.y);
         drawApple(ctx, apple2.position.x, apple2.position.y);
@@ -112,8 +154,10 @@ function eat(snake, apple) {
     if (snake.head.x == apple.position.x && snake.head.y == apple.position.y) {
         apple.position = initPosition();
         snake.score++;
-        snake.speed -= 5;
         snake.body.push({ x: snake.head.x, y: snake.head.y });
+        if (snake.score % 5 === 0) {
+            snake.speed -= 50;
+        }
     }
 }
 
@@ -179,6 +223,8 @@ function move(snake) {
         setTimeout(function() {
             move(snake);
         }, snake.speed);
+    } else {
+        initGame();
     }
 }
 
