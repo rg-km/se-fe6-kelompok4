@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <style>
+        body {
+            background: burlywood;
+            margin: 0 px;
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font: arial;
+        }
+    </style>
+</head>
+<script type="text/javascript" src="script.js"></script>
+
+<body onload="draw();">
+    <h1>Snake Game</h1>
+    <canvas id="snakeBoard" width="500" height="500" style="background-color: white; box-shadow: black 10px 10px 10px;"></canvas>
+    <br>
+    <canvas id="levelBoard" width="200" height="50"></canvas>
+    <canvas id="scoreBoard" width="200" height="50"></canvas>
+    <canvas id="speedBoard" width="200" height="50"></canvas>
+    <img src="assets/apple.png" id="apple" alt="" width="20" height="20" style="display: none" />
+    <img src="assets/life.png" id="life" alt="" width="20" height="20" style="display: none" />
+    <img src="assets/life.png" id="heart" alt="" width="20" height="20" style="display: none" />
+    <img src="assets/snake-head.png" id="snakeHead" alt="" width="30" height="30" style="display: none;" />
+    <img src="assets/snake-body.png" id="snakeBody" alt="" width="20" height="20" style="display: none;" />
+</body>
+
+</html>
