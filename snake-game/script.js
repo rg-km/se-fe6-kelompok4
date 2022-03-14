@@ -11,6 +11,8 @@ const DIRECTION = {
     DOWN: 3,
 }
 
+let live = 3;
+
 function initPosition() {
     return {
         x: Math.floor(Math.random() * WIDTH),
@@ -39,7 +41,7 @@ function initSnake(color) {
         score: 0,
         level: 1,
         speed: 300,
-        heart: 3
+        live: 3
     }
 }
 
@@ -145,6 +147,10 @@ function draw() {
             drawLive(ctx, life1.position.x, life1.position.y);
         }
 
+        for (let i = 0; i < snake1.live; i++) {
+            drawLive(ctx, i, 0);
+        }
+
     }, REDRAW_INTERVAL);
 }
 
@@ -175,38 +181,35 @@ function eat(snake, apple) {
         snake.score++;
         snake.body.push({ x: snake.head.x, y: snake.head.y });
 
-        if (snake.speed <= 50 && snake.level > 5) {
-            snake.level = 1;
-            snake.speed = 300;
-            snake.score = 0;
-            var audio = new Audio('game-over.wav');
-            audio.play();
-            setTimeout(() => {
-                alert("Hore, kamu menang");
-            }, 200)
-        }
-
-        if (snake.score % 5 === 0 && snake.speed > 50) {
+        if (snake.score % 5 === 0 && snake.speed >= 100) {
             snake.level++;
             snake.speed -= 50;
-            var audio = new Audio('level-up.wav');
+            var audio = new Audio("assets/level-up.wav");
             audio.play();
             setTimeout(() => {
                 alert("Yey, level " + snake.level);
             }, 200)
         }
 
-        //if (snake.life > 1) {
-        //snake.level = 1;
-        //snake.score = 0;
-        //snake.life = 3;
-        //let audio = new Audio('game-over.wav');
-        //audio.play();
-        //setTimeout(() => {
-        //alert("Game Over");
-        //}, )
-        //}
+        if (snake.speed <= 50 && snake.level > 5) {
+            snake.level = 1;
+            snake.speed = 300;
+            snake.score = 0;
+            snake1.body.length = 0;
+            var audio = new Audio("assets/game-over.wav");
+            audio.play();
+            setTimeout(() => {
+                alert("Hore, kamu menang");
+            }, 200)
+        }
+    }
+}
 
+function eatLive(snake, life1) {
+    if (snake.head.x == life1.position.x && snake.head.y == life1.position.y) {
+        life1.position = initPosition();
+        snake.score++;
+        snake.live++;
     }
 }
 
@@ -215,7 +218,7 @@ function moveLeft(snake) {
     teleport(snake);
     eat(snake, apple);
     eat(snake, apple2);
-    eat(snake, life1);
+    eatLive(snake, life1);
 }
 
 function moveRight(snake) {
@@ -223,7 +226,7 @@ function moveRight(snake) {
     teleport(snake);
     eat(snake, apple);
     eat(snake, apple2);
-    eat(snake, life1);
+    eatLive(snake, life1);
 }
 
 function moveDown(snake) {
@@ -231,7 +234,7 @@ function moveDown(snake) {
     teleport(snake);
     eat(snake, apple);
     eat(snake, apple2);
-    eat(snake, life1);
+    eatLive(snake, life1);
 }
 
 function moveUp(snake) {
@@ -239,7 +242,7 @@ function moveUp(snake) {
     teleport(snake);
     eat(snake, apple);
     eat(snake, apple2);
-    eat(snake, life1);
+    eatLive(snake, life1);
 }
 
 function checkCollision(snakes) {
