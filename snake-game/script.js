@@ -11,8 +11,6 @@ const DIRECTION = {
     DOWN: 3,
 }
 
-let live = 3;
-
 function initPosition() {
     return {
         x: Math.floor(Math.random() * WIDTH),
@@ -210,6 +208,7 @@ function eatLive(snake, life1) {
         life1.position = initPosition();
         snake.score++;
         snake.live++;
+        snake.body.push({ x: snake.head.x, y: snake.head.y });
     }
 }
 
